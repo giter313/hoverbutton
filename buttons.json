@@ -8,31 +8,31 @@
     },
     {
       "label": "PolyTrack1.0",
-      "description": "F1みたいな車で",
+      "description": "F1ライクv1",
       "media": "./assets/arena.mp4",
       "link": "https://example.com/arena"
     },
     {
       "label": "PolyTrack2.0",
-      "description": "装備とアイテム購入",
+      "description": "F1ライクv2",
       "media": "./assets/shop.mp4",
       "link": "https://example.com/shop"
     }
     {
       "label": "PolyTrack3.0",
-      "description": "装備とアイテム購入",
+      "description": "F1ライクv3",
       "media": "./assets/shop.mp4",
       "link": "https://example.com/shop"
     }
     {
       "label": "TETRIS",
-      "description": "装備とアイテム購入",
+      "description": "ブロック積み積み",
       "media": "./assets/shop.mp4",
       "link": "https://example.com/shop"
     }
     {
-      "label": "SHOP",
-      "description": "装備とアイテム購入",
+      "label": "Among Us",
+      "description": "大人気人狼ゲーム",
       "media": "./assets/shop.mp4",
       "link": "https://example.com/shop"
     }
