@@ -8,10 +8,9 @@
 :root {
   color-scheme: light dark;
   --neon: #38bdf8;
-  --card: rgba(15,23,42,.95);
+  --card: rgba(15,23,42,.96);
 }
 
-/* ===== 透明 iframe / Pages 想定 ===== */
 html, body {
   margin: 0;
   padding: 0;
@@ -19,7 +18,6 @@ html, body {
   font-family: system-ui, sans-serif;
 }
 
-/* ===== ページ全体 ===== */
 #root {
   max-width: 1200px;
   margin: 0 auto;
@@ -28,25 +26,23 @@ html, body {
 
 /* ===== タイトル ===== */
 h1 {
-  font-size: 1.6rem;
-  margin: 0 0 36px;   /* ← 余白広め */
+  margin: 0 0 48px;
   text-align: center;
-  letter-spacing: .15em;
+  font-size: 1.6rem;
+  letter-spacing: .18em;
   color: var(--neon);
 }
 
-/* ===== ボタン一覧 ===== */
+/* ===== ボタン群 ===== */
 .buttons {
   display: flex;
-  flex-wrap: wrap;           /* ★ 改行の要 */
-  justify-content: center;   /* 中央寄せ */
-  gap: 16px 18px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px 20px;
 }
 
-/* ===== 各ボタン ===== */
 .wrapper {
   position: relative;
-  display: inline-block;
 }
 
 /* ===== BUTTON ===== */
@@ -70,30 +66,37 @@ h1 {
   box-shadow: 0 0 18px rgba(56,189,248,.45);
 }
 
-/* ===== PREVIEW ===== */
+/* ===== PREVIEW（見切れ防止 完全版） ===== */
 .preview {
   position: absolute;
-  bottom: 120%;
+  bottom: calc(100% + 14px);
+
+  /* ★ ここが核心 */
   left: 50%;
-  transform: translateX(-50%) scale(.96);
-  width: 280px;
+  translate: -50% 0;
+  max-width: min(90vw, 320px);
+
   padding: 14px;
   border-radius: 14px;
   background: var(--card);
   border: 1px solid rgba(56,189,248,.4);
+
   box-shadow:
     0 0 22px rgba(56,189,248,.35),
     inset 0 0 12px rgba(56,189,248,.15);
 
   opacity: 0;
   pointer-events: none;
-  transition: .2s ease;
+  transition: opacity .18s ease, transform .18s ease;
   z-index: 9999;
+
+  /* ★ はみ出し対策 */
+  margin-inline: max(8px, env(safe-area-inset-left))
+                 max(8px, env(safe-area-inset-right));
 }
 
 .wrapper:hover .preview {
   opacity: 1;
-  transform: translateX(-50%) scale(1);
 }
 
 .preview video {
@@ -108,10 +111,10 @@ h1 {
   opacity: .85;
 }
 
-/* ===== スマホ微調整 ===== */
+/* ===== モバイル最適化 ===== */
 @media (max-width: 480px) {
-  .preview {
-    width: 240px;
+  h1 {
+    margin-bottom: 56px;
   }
 }
 </style>
@@ -125,30 +128,29 @@ h1 {
 </div>
 
 <script>
-/* ===== JSON 読み込み & 生成 ===== */
 fetch("./buttons.json")
-  .then(res => res.json())
+  .then(r => r.json())
   .then(data => {
     const area = document.getElementById("buttons");
 
     data.buttons.forEach(b => {
-      const w = document.createElement("div");
-      w.className = "wrapper";
+      const wrap = document.createElement("div");
+      wrap.className = "wrapper";
 
       const btn = document.createElement("button");
       btn.className = "cyber-btn";
       btn.textContent = b.label;
-      btn.onclick = () => location.href = b.link; // 同じタブ
+      btn.onclick = () => location.href = b.link;
 
-      const p = document.createElement("div");
-      p.className = "preview";
-      p.innerHTML = `
+      const pv = document.createElement("div");
+      pv.className = "preview";
+      pv.innerHTML = `
         <video src="${b.media}" autoplay muted loop playsinline></video>
         <p>${b.description}</p>
       `;
 
-      w.append(btn, p);
-      area.appendChild(w);
+      wrap.append(btn, pv);
+      area.appendChild(wrap);
     });
   });
 </script>
