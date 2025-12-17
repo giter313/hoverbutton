@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+  color-scheme: light dark;
+  --neon: #38bdf8;
+  --card: rgba(15,23,42,.95);
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  font-family: system-ui, sans-serif;
+}
+
+#root {
+  display: inline-flex;
+  gap: 16px;
+  padding: 24px;
+}
+
+/* ===== BUTTON ===== */
+
+.wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.cyber-btn {
+  padding: 12px 18px;
+  border-radius: 14px;
+  background:
+    linear-gradient(#020617, #020617) padding-box,
+    linear-gradient(135deg, var(--neon), transparent) border-box;
+  border: 1px solid transparent;
+  color: var(--neon);
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: box-shadow .15s ease, transform .15s ease;
+}
+
+.cyber-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 18px rgba(56,189,248,.45);
+}
+
+/* ===== PREVIEW ===== */
+
+.preview {
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%) scale(.96);
+  width: 300px;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--card);
+  border: 1px solid rgba(56,189,248,.4);
+  box-shadow:
+    0 0 22px rgba(56,189,248,.35),
+    inset 0 0 12px rgba(56,189,248,.15);
+  opacity: 0;
+  pointer-events: none;
+  transition: .2s ease;
+  z-index: 9999;
+}
+
+.wrapper:hover .preview {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+.preview video {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.preview p {
+  margin: 0;
+  font-size: 13px;
+  opacity: .85;
+}
+</style>
+</head>
+
+<body>
+
+<div id="root"></div>
+
+<script>
+const root = document.getElementById("root");
+
+/* ===== ボタン生成 ===== */
+function createButton({ label, description, media, link }) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "wrapper";
+
+  const a = document.createElement("a");
+  a.className = "cyber-btn";
+  a.textContent = label;
+  a.href = link;
+  a.target = "_self";
+
+  const preview = document.createElement("div");
+  preview.className = "preview";
+  preview.innerHTML = `
+    <video src="${media}" autoplay muted loop playsinline></video>
+    <p>${description}</p>
+  `;
+
+  wrapper.append(a, preview);
+  root.appendChild(wrapper);
+}
+
+/* ===== JSON 読み込み ===== */
+fetch("./buttons.json")
+  .then(res => res.json())
+  .then(data => {
+    data.buttons.forEach(createButton);
+  })
+  .catch(err => {
+    console.error("buttons.json 読み込み失敗", err);
+  });
+</script>
+
+</body>
+</html>

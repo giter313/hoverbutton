@@ -1,0 +1,22 @@
+{
+  "buttons": [
+    {
+      "label": "START",
+      "description": "メインミッションを開始",
+      "media": "./assets/start.mp4",
+      "link": "https://example.com/start"
+    },
+    {
+      "label": "ARENA",
+      "description": "オンライン対戦モード",
+      "media": "./assets/arena.mp4",
+      "link": "https://example.com/arena"
+    },
+    {
+      "label": "SHOP",
+      "description": "装備とアイテム購入",
+      "media": "./assets/shop.mp4",
+      "link": "https://example.com/shop"
+    }
+  ]
+}
