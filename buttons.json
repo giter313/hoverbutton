@@ -7,11 +7,29 @@
       "link": "https://example.com/start"
     },
     {
-      "label": "ARENA",
-      "description": "オンライン対戦モード",
+      "label": "PolyTrack1.0",
+      "description": "F1みたいな車で",
       "media": "./assets/arena.mp4",
       "link": "https://example.com/arena"
     },
+    {
+      "label": "PolyTrack2.0",
+      "description": "装備とアイテム購入",
+      "media": "./assets/shop.mp4",
+      "link": "https://example.com/shop"
+    }
+    {
+      "label": "PolyTrack3.0",
+      "description": "装備とアイテム購入",
+      "media": "./assets/shop.mp4",
+      "link": "https://example.com/shop"
+    }
+    {
+      "label": "TETRIS",
+      "description": "装備とアイテム購入",
+      "media": "./assets/shop.mp4",
+      "link": "https://example.com/shop"
+    }
     {
       "label": "SHOP",
       "description": "装備とアイテム購入",
