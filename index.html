@@ -20,7 +20,7 @@ html, body {
 
 /* ===== TITLE ===== */
 .page-title {
-  margin: 24px 24px 8px;
+  margin: 32px 24px 24px; /* ← 下を広げた */
   font-size: 1.6rem;
   font-weight: 700;
   letter-spacing: .15em;
@@ -35,7 +35,7 @@ html, body {
 #root {
   display: inline-flex;
   gap: 16px;
-  padding: 8px 24px 24px;
+  padding: 0 24px 24px;
 }
 
 /* ===== WRAPPER ===== */
@@ -68,10 +68,9 @@ html, body {
 
 /* ===== PREVIEW ===== */
 .preview {
-  position: absolute;
-  bottom: 120%;
-  left: 50%;
-  transform: translateX(-50%) scale(.96);
+  position: fixed; /* ★ absolute → fixed に変更（決定打） */
+  bottom: auto;
+  left: 0;
   width: 300px;
   padding: 14px;
   border-radius: 14px;
@@ -80,13 +79,15 @@ html, body {
   box-shadow:
     0 0 22px rgba(56,189,248,.35),
     inset 0 0 12px rgba(56,189,248,.15);
+
   opacity: 0;
   pointer-events: none;
-  transition: opacity .2s ease, transform .2s ease;
+  transform: scale(.96);
+  transition: opacity .15s ease, transform .15s ease;
   z-index: 9999;
 }
 
-.wrapper:hover .preview {
+.preview.show {
   opacity: 1;
   transform: scale(1);
 }
@@ -113,7 +114,6 @@ html, body {
 <script>
 const root = document.getElementById("root");
 
-/* ===== ボタン生成（画面内補正つき） ===== */
 function createButton({ label, description, media, link }) {
   const wrapper = document.createElement("div");
   wrapper.className = "wrapper";
@@ -131,39 +131,43 @@ function createButton({ label, description, media, link }) {
     <p>${description}</p>
   `;
 
+  document.body.appendChild(preview);
+
   wrapper.addEventListener("mouseenter", () => {
-    preview.style.left = "50%";
-    preview.style.right = "auto";
-    preview.style.transform = "translateX(-50%) scale(1)";
+    const btnRect = a.getBoundingClientRect();
 
-    const rect = preview.getBoundingClientRect();
-    const vw = window.innerWidth;
+    preview.classList.add("show");
 
-    if (rect.left < 8) {
-      preview.style.left = "0";
-      preview.style.transform = "translateX(0) scale(1)";
-    }
+    requestAnimationFrame(() => {
+      const rect = preview.getBoundingClientRect();
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
 
-    if (rect.right > vw - 8) {
-      preview.style.left = "auto";
-      preview.style.right = "0";
-      preview.style.transform = "translateX(0) scale(1)";
-    }
+      let left = btnRect.left + btnRect.width / 2 - rect.width / 2;
+      let top = btnRect.top - rect.height - 12;
+
+      if (left < 8) left = 8;
+      if (left + rect.width > vw - 8) left = vw - rect.width - 8;
+      if (top < 8) top = btnRect.bottom + 12;
+
+      preview.style.left = left + "px";
+      preview.style.top = top + "px";
+    });
   });
 
-  wrapper.append(a, preview);
+  wrapper.addEventListener("mouseleave", () => {
+    preview.classList.remove("show");
+  });
+
+  wrapper.appendChild(a);
   root.appendChild(wrapper);
 }
 
 /* ===== JSON 読み込み ===== */
 fetch("./buttons.json")
-  .then(res => res.json())
-  .then(data => {
-    data.buttons.forEach(createButton);
-  })
-  .catch(err => {
-    console.error("buttons.json 読み込み失敗", err);
-  });
+  .then(r => r.json())
+  .then(d => d.buttons.forEach(createButton))
+  .catch(e => console.error("buttons.json 読み込み失敗", e));
 </script>
 
 </body>
