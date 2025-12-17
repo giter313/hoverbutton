@@ -11,6 +11,7 @@
   --card: rgba(15,23,42,.95);
 }
 
+/* ===== 透明 iframe / Pages 想定 ===== */
 html, body {
   margin: 0;
   padding: 0;
@@ -18,27 +19,31 @@ html, body {
   font-family: system-ui, sans-serif;
 }
 
-/* ===== TITLE ===== */
-.page-title {
-  margin: 32px 24px 24px; /* ← 下を広げた */
+/* ===== ページ全体 ===== */
+#root {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* ===== タイトル ===== */
+h1 {
   font-size: 1.6rem;
-  font-weight: 700;
+  margin: 0 0 36px;   /* ← 余白広め */
+  text-align: center;
   letter-spacing: .15em;
   color: var(--neon);
-  text-shadow:
-    0 0 8px rgba(56,189,248,.6),
-    0 0 16px rgba(56,189,248,.35);
-  user-select: none;
 }
 
-/* ===== BUTTON AREA ===== */
-#root {
-  display: inline-flex;
-  gap: 16px;
-  padding: 0 24px 24px;
+/* ===== ボタン一覧 ===== */
+.buttons {
+  display: flex;
+  flex-wrap: wrap;           /* ★ 改行の要 */
+  justify-content: center;   /* 中央寄せ */
+  gap: 16px 18px;
 }
 
-/* ===== WRAPPER ===== */
+/* ===== 各ボタン ===== */
 .wrapper {
   position: relative;
   display: inline-block;
@@ -46,7 +51,7 @@ html, body {
 
 /* ===== BUTTON ===== */
 .cyber-btn {
-  padding: 12px 18px;
+  padding: 12px 20px;
   border-radius: 14px;
   background:
     linear-gradient(#020617, #020617) padding-box,
@@ -55,9 +60,8 @@ html, body {
   color: var(--neon);
   font-weight: 700;
   letter-spacing: .05em;
-  text-decoration: none;
-  white-space: nowrap;
   cursor: pointer;
+  white-space: nowrap;
   transition: box-shadow .15s ease, transform .15s ease;
 }
 
@@ -68,10 +72,11 @@ html, body {
 
 /* ===== PREVIEW ===== */
 .preview {
-  position: fixed; /* ★ absolute → fixed に変更（決定打） */
-  bottom: auto;
-  left: 0;
-  width: 300px;
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%) scale(.96);
+  width: 280px;
   padding: 14px;
   border-radius: 14px;
   background: var(--card);
@@ -82,14 +87,13 @@ html, body {
 
   opacity: 0;
   pointer-events: none;
-  transform: scale(.96);
-  transition: opacity .15s ease, transform .15s ease;
+  transition: .2s ease;
   z-index: 9999;
 }
 
-.preview.show {
+.wrapper:hover .preview {
   opacity: 1;
-  transform: scale(1);
+  transform: translateX(-50%) scale(1);
 }
 
 .preview video {
@@ -103,71 +107,50 @@ html, body {
   font-size: 13px;
   opacity: .85;
 }
+
+/* ===== スマホ微調整 ===== */
+@media (max-width: 480px) {
+  .preview {
+    width: 240px;
+  }
+}
 </style>
 </head>
 
 <body>
 
-<h1 class="page-title">GAMES</h1>
-<div id="root"></div>
+<div id="root">
+  <h1>GAMES</h1>
+  <div class="buttons" id="buttons"></div>
+</div>
 
 <script>
-const root = document.getElementById("root");
+/* ===== JSON 読み込み & 生成 ===== */
+fetch("./buttons.json")
+  .then(res => res.json())
+  .then(data => {
+    const area = document.getElementById("buttons");
 
-function createButton({ label, description, media, link }) {
-  const wrapper = document.createElement("div");
-  wrapper.className = "wrapper";
+    data.buttons.forEach(b => {
+      const w = document.createElement("div");
+      w.className = "wrapper";
 
-  const a = document.createElement("a");
-  a.className = "cyber-btn";
-  a.textContent = label;
-  a.href = link;
-  a.target = "_self";
+      const btn = document.createElement("button");
+      btn.className = "cyber-btn";
+      btn.textContent = b.label;
+      btn.onclick = () => location.href = b.link; // 同じタブ
 
-  const preview = document.createElement("div");
-  preview.className = "preview";
-  preview.innerHTML = `
-    <video src="${media}" autoplay muted loop playsinline></video>
-    <p>${description}</p>
-  `;
+      const p = document.createElement("div");
+      p.className = "preview";
+      p.innerHTML = `
+        <video src="${b.media}" autoplay muted loop playsinline></video>
+        <p>${b.description}</p>
+      `;
 
-  document.body.appendChild(preview);
-
-  wrapper.addEventListener("mouseenter", () => {
-    const btnRect = a.getBoundingClientRect();
-
-    preview.classList.add("show");
-
-    requestAnimationFrame(() => {
-      const rect = preview.getBoundingClientRect();
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-
-      let left = btnRect.left + btnRect.width / 2 - rect.width / 2;
-      let top = btnRect.top - rect.height - 12;
-
-      if (left < 8) left = 8;
-      if (left + rect.width > vw - 8) left = vw - rect.width - 8;
-      if (top < 8) top = btnRect.bottom + 12;
-
-      preview.style.left = left + "px";
-      preview.style.top = top + "px";
+      w.append(btn, p);
+      area.appendChild(w);
     });
   });
-
-  wrapper.addEventListener("mouseleave", () => {
-    preview.classList.remove("show");
-  });
-
-  wrapper.appendChild(a);
-  root.appendChild(wrapper);
-}
-
-/* ===== JSON 読み込み ===== */
-fetch("./buttons.json")
-  .then(r => r.json())
-  .then(d => d.buttons.forEach(createButton))
-  .catch(e => console.error("buttons.json 読み込み失敗", e));
 </script>
 
 </body>
