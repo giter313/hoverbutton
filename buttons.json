@@ -1,8 +1,8 @@
 {
   "buttons": [
     {
-      "label": "START",
-      "description": "メインミッションを開始",
+      "label": "Escape Road2",
+      "description": "警察から逃げる、グラセフライクなゲームです。",
       "media": "./assets/start.mp4",
       "link": "https://example.com/start"
     },
