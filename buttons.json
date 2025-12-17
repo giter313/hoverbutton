@@ -17,24 +17,6 @@
       "description": "F1ライクv2",
       "media": "./assets/shop.mp4",
       "link": "https://example.com/shop"
-    },
-    {
-      "label": "PolyTrack3.0",
-      "description": "F1ライクv3",
-      "media": "./assets/shop.mp4",
-      "link": "https://example.com/shop"
-    },
-    {
-      "label": "TETRIS",
-      "description": "ブロック積み積み",
-      "media": "./assets/shop.mp4",
-      "link": "https://example.com/shop"
-    },
-    {
-      "label": "Among Us",
-      "description": "大人気人狼ゲーム",
-      "media": "./assets/shop.mp4",
-      "link": "https://example.com/shop"
-    },
+    }
   ]
 }
