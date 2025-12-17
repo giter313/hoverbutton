@@ -9,32 +9,32 @@
       {
          "label":"PolyTrack1.0",
          "description":"F1ライクv1",
-         "media":"./assets/Polytrack.webm",
-         "link":"https://example.com/arena"
+         "media":"./assets/Polytrack1.webm",
+         "link":"https://sites.google.com/view/ramengameportal/games/driving/polytrack0-2-0"
       },
       {
          "label":"PolyTrack2.0",
          "description":"F1ライクv2",
-         "media":"./assets/Polytrack.mp4",
+         "media":"./assets/Polytrack2.webm",
          "link":"https://example.com/shop"
       },
       {
          "label":"PolyTrack3.0",
          "description":"F1ライクv3",
-         "media":"./assets/shop.mp4",
-         "link":"https://example.com/shop"
+         "media":"./assets/Polytrack.webm",
+         "link":"https://sites.google.com/view/ramengameportal/games/driving/polytrack0-5-0"
       },
       {
          "label":"TETRIS",
          "description":"ブロック積み積み",
-         "media":"./assets/shop.mp4",
-         "link":"https://example.com/shop"
+         "media":"./assets/Tetris.webm",
+         "link":"https://sites.google.com/view/ramengameportal/games/tetris"
       },
       {
          "label":"Among Us",
          "description":"大人気人狼ゲーム",
-         "media":"./assets/shop.mp4",
-         "link":"https://example.com/shop"
+         "media":"./assets/Amongus.webm",
+         "link":"https://turbowarp.org/1254967314/fullscreen"
       }
    ]
 }
