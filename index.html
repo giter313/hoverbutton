@@ -18,19 +18,33 @@ html, body {
   font-family: system-ui, sans-serif;
 }
 
+/* ===== TITLE ===== */
+.page-title {
+  margin: 24px 24px 8px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: .15em;
+  color: var(--neon);
+  text-shadow:
+    0 0 8px rgba(56,189,248,.6),
+    0 0 16px rgba(56,189,248,.35);
+  user-select: none;
+}
+
+/* ===== BUTTON AREA ===== */
 #root {
   display: inline-flex;
   gap: 16px;
-  padding: 24px;
+  padding: 8px 24px 24px;
 }
 
-/* ===== BUTTON ===== */
-
+/* ===== WRAPPER ===== */
 .wrapper {
   position: relative;
   display: inline-block;
 }
 
+/* ===== BUTTON ===== */
 .cyber-btn {
   padding: 12px 18px;
   border-radius: 14px;
@@ -53,7 +67,6 @@ html, body {
 }
 
 /* ===== PREVIEW ===== */
-
 .preview {
   position: absolute;
   bottom: 120%;
@@ -69,13 +82,13 @@ html, body {
     inset 0 0 12px rgba(56,189,248,.15);
   opacity: 0;
   pointer-events: none;
-  transition: .2s ease;
+  transition: opacity .2s ease, transform .2s ease;
   z-index: 9999;
 }
 
 .wrapper:hover .preview {
   opacity: 1;
-  transform: translateX(-50%) scale(1);
+  transform: scale(1);
 }
 
 .preview video {
@@ -95,13 +108,12 @@ html, body {
 <body>
 
 <h1 class="page-title">GAMES</h1>
-
 <div id="root"></div>
 
 <script>
 const root = document.getElementById("root");
 
-/* ===== ボタン生成 ===== */
+/* ===== ボタン生成（画面内補正つき） ===== */
 function createButton({ label, description, media, link }) {
   const wrapper = document.createElement("div");
   wrapper.className = "wrapper";
@@ -118,6 +130,26 @@ function createButton({ label, description, media, link }) {
     <video src="${media}" autoplay muted loop playsinline></video>
     <p>${description}</p>
   `;
+
+  wrapper.addEventListener("mouseenter", () => {
+    preview.style.left = "50%";
+    preview.style.right = "auto";
+    preview.style.transform = "translateX(-50%) scale(1)";
+
+    const rect = preview.getBoundingClientRect();
+    const vw = window.innerWidth;
+
+    if (rect.left < 8) {
+      preview.style.left = "0";
+      preview.style.transform = "translateX(0) scale(1)";
+    }
+
+    if (rect.right > vw - 8) {
+      preview.style.left = "auto";
+      preview.style.right = "0";
+      preview.style.transform = "translateX(0) scale(1)";
+    }
+  });
 
   wrapper.append(a, preview);
   root.appendChild(wrapper);
