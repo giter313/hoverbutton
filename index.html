@@ -1,186 +1,177 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cyber Neon Grid</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 :root {
   color-scheme: light dark;
-  --bg: #05080f;
-  --card: #0b1220;
-  --neon: #22d3ee;
-  --neon-soft: rgba(34,211,238,.35);
-  --text: #e5e7eb;
-  --muted: #9ca3af;
+  --neon: #38bdf8;
+  --card: rgba(15,23,42,.96);
 }
 
-body {
-  margin: 24px;
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #020617;
   font-family: system-ui, sans-serif;
-  background:
-    radial-gradient(circle at top, #0a1024, #03040a);
-  color: var(--text);
 }
 
+#root {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+/* ===== TITLE ===== */
 h1 {
-  font-size: 1.4rem;
-  margin-bottom: 16px;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 16px;
-}
-
-.button-card {
-  background: linear-gradient(180deg, #0c1430, #060a18);
-  border-radius: 12px;
-  padding: 14px;
   text-align: center;
+  margin: 0 0 48px;
+  letter-spacing: .2em;
+  color: var(--neon);
+  font-size: 1.6rem;
+}
+
+/* ===== BUTTON GRID ===== */
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, max-content));
+  justify-content: center;
+  gap: 18px 20px;
+}
+
+/* ===== BUTTON ===== */
+.cyber-btn {
+  min-width: 160px;
+  padding: 12px 20px;
+  border-radius: 14px;
+  background:
+    linear-gradient(#020617, #020617) padding-box,
+    linear-gradient(135deg, var(--neon), transparent) border-box;
+  border: 1px solid transparent;
+  color: var(--neon);
+  font-weight: 700;
+  letter-spacing: .05em;
   cursor: pointer;
-  position: relative;
-  border: 1px solid rgba(255,255,255,0.06);
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,0.02),
-    0 0 12px var(--neon-soft);
-  transition: transform .15s ease, box-shadow .15s ease;
-  white-space: nowrap; /* 絶対改行しない */
+
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  transition: box-shadow .15s ease, transform .15s ease;
 }
 
-.button-card:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,0.05),
-    0 0 20px var(--neon);
+.cyber-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 18px rgba(56,189,248,.45);
 }
 
-.button-card span {
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-
-/* ===== プレビュー ===== */
-
+/* ===== PREVIEW ===== */
 .preview {
   position: fixed;
-  z-index: 9999;
-  width: 260px;
+  width: min(90vw, 320px);
+  padding: 14px;
+  border-radius: 14px;
   background: var(--card);
-  border-radius: 12px;
-  padding: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.5);
-  border: 1px solid rgba(255,255,255,.08);
-  display: none;
+  border: 1px solid rgba(56,189,248,.4);
+  box-shadow:
+    0 0 22px rgba(56,189,248,.35),
+    inset 0 0 12px rgba(56,189,248,.15);
+
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transition: opacity .15s ease;
 }
 
 .preview video {
   width: 100%;
-  border-radius: 8px;
+  border-radius: 10px;
   margin-bottom: 8px;
 }
 
-.preview .desc {
+.preview p {
+  margin: 0;
   font-size: 13px;
-  color: var(--muted);
-  line-height: 1.4;
+  opacity: .85;
 }
 </style>
 </head>
 
 <body>
-<h1>Cyber Button Grid</h1>
 
-<div class="grid" id="grid"></div>
-
-<div class="preview" id="preview">
-  <video muted loop playsinline></video>
-  <div class="desc"></div>
+<div id="root">
+  <h1>GAMES</h1>
+  <div class="buttons" id="buttons"></div>
 </div>
 
 <script>
-/* ===== JSON データ ===== */
-const data = [
-  {
-    title: "Google Sites 1",
-    url: "https://sites.google.com/",
-    video: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-    description: "Google Sites のページを新しいタブで開きます"
-  },
-  {
-    title: "Google Sites 2",
-    url: "https://sites.google.com/",
-    video: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-    description: "iframe でも安全に遷移します"
-  }
-];
+/* ===== JSON（fetch 不使用） ===== */
+const data = {
+  buttons: [
+    {
+      label: "Game 1",
+      link: "https://sites.google.com/",
+      media: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+      description: "Google Sites のページを開きます"
+    },
+    {
+      label: "Game 2",
+      link: "https://sites.google.com/",
+      media: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+      description: "iframe 制限を回避して新しいタブで開きます"
+    }
+  ]
+};
 
-const grid = document.getElementById("grid");
-const preview = document.getElementById("preview");
-const previewVideo = preview.querySelector("video");
-const previewDesc = preview.querySelector(".desc");
+const area = document.getElementById("buttons");
+const preview = document.createElement("div");
+preview.className = "preview";
+document.body.appendChild(preview);
 
-/* ===== ボタン生成 ===== */
-data.forEach(item => {
-  const btn = document.createElement("div");
-  btn.className = "button-card";
-  btn.innerHTML = `<span>${item.title}</span>`;
+data.buttons.forEach(b => {
+  const btn = document.createElement("button");
+  btn.className = "cyber-btn";
+  btn.textContent = b.label;
 
-  /* クリック → 新しいタブ */
+  /* ★ 新しいタブで開く */
   btn.addEventListener("click", () => {
-    window.open(item.url, "_blank", "noopener");
+    window.open(b.link, "_blank", "noopener");
   });
 
-  /* hover プレビュー */
-  btn.addEventListener("pointerenter", e => {
-    previewVideo.src = item.video;
-    previewVideo.currentTime = 0;
-    previewVideo.play().catch(() => {});
-    previewDesc.textContent = item.description;
-    preview.style.display = "block";
-    positionPreview(e.currentTarget);
+  btn.addEventListener("mouseenter", e => {
+    preview.innerHTML = `
+      <video src="${b.media}" autoplay muted loop playsinline></video>
+      <p>${b.description}</p>
+    `;
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const pw = preview.offsetWidth;
+    const ph = preview.offsetHeight;
+    const margin = 12;
+
+    let x = rect.left + rect.width / 2 - pw / 2;
+    let y = rect.top - ph - margin;
+
+    if (y < margin) {
+      y = rect.bottom + margin;
+    }
+
+    x = Math.max(margin, Math.min(window.innerWidth - pw - margin, x));
+
+    preview.style.left = x + "px";
+    preview.style.top = y + "px";
+    preview.style.opacity = 1;
   });
 
-  btn.addEventListener("pointerleave", () => {
-    preview.style.display = "none";
-    previewVideo.pause();
+  btn.addEventListener("mouseleave", () => {
+    preview.style.opacity = 0;
   });
 
-  grid.appendChild(btn);
+  area.appendChild(btn);
 });
-
-/* ===== プレビュー位置制御（見切れ防止） ===== */
-function positionPreview(target) {
-  const rect = target.getBoundingClientRect();
-  const pvRect = preview.getBoundingClientRect();
-  const margin = 12;
-
-  let top = rect.top - pvRect.height - margin;
-  let left = rect.left + rect.width / 2 - pvRect.width / 2;
-
-  /* 上に出せない場合は下 */
-  if (top < margin) {
-    top = rect.bottom + margin;
-  }
-
-  /* 左右クランプ */
-  left = Math.max(
-    margin,
-    Math.min(left, window.innerWidth - pvRect.width - margin)
-  );
-
-  /* 下にはみ出る場合は上に戻す */
-  if (top + pvRect.height > window.innerHeight - margin) {
-    top = rect.top - pvRect.height - margin;
-  }
-
-  preview.style.top = `${top}px`;
-  preview.style.left = `${left}px`;
-}
 </script>
+
 </body>
 </html>
