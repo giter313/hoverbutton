@@ -41,6 +41,10 @@ h1 {
   gap: 18px 20px;
 }
 
+.wrapper {
+  position: relative;
+}
+
 /* ===== BUTTON ===== */
 .cyber-btn {
   min-width: 160px;
@@ -55,7 +59,7 @@ h1 {
   letter-spacing: .05em;
   cursor: pointer;
 
-  white-space: nowrap;
+  white-space: nowrap;        /* ★ 絶対改行させない */
   overflow: hidden;
   text-overflow: ellipsis;
 
@@ -69,7 +73,7 @@ h1 {
 
 /* ===== PREVIEW ===== */
 .preview {
-  position: fixed;
+  position: fixed;            /* ★ 画面基準にする */
   width: min(90vw, 320px);
   padding: 14px;
   border-radius: 14px;
@@ -107,70 +111,55 @@ h1 {
 </div>
 
 <script>
-/* ===== JSON（fetch 不使用） ===== */
-const data = {
-  buttons: [
-    {
-      label: "Game 1",
-      link: "https://sites.google.com/",
-      media: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-      description: "Google Sites のページを開きます"
-    },
-    {
-      label: "Game 2",
-      link: "https://sites.google.com/",
-      media: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-      description: "iframe 制限を回避して新しいタブで開きます"
-    }
-  ]
-};
+fetch("./buttons.json")
+  .then(r => r.json())
+  .then(data => {
+    const area = document.getElementById("buttons");
+    const preview = document.createElement("div");
+    preview.className = "preview";
+    document.body.appendChild(preview);
 
-const area = document.getElementById("buttons");
-const preview = document.createElement("div");
-preview.className = "preview";
-document.body.appendChild(preview);
+    data.buttons.forEach(b => {
+      const wrap = document.createElement("div");
+      wrap.className = "wrapper";
 
-data.buttons.forEach(b => {
-  const btn = document.createElement("button");
-  btn.className = "cyber-btn";
-  btn.textContent = b.label;
+      const btn = document.createElement("button");
+      btn.className = "cyber-btn";
+      btn.textContent = b.label;
+      btn.onclick = () => { window.open(b.link, "_blank", "noopener");
 
-  /* ★ 新しいタブで開く */
-  btn.addEventListener("click", () => {
-    window.open(b.link, "_blank", "noopener");
+      btn.addEventListener("mouseenter", e => {
+        preview.innerHTML = `
+          <video src="${b.media}" autoplay muted loop playsinline></video>
+          <p>${b.description}</p>
+        `;
+
+        const rect = e.target.getBoundingClientRect();
+        const pw = preview.offsetWidth || 320;
+        const ph = preview.offsetHeight || 200;
+
+        let x = rect.left + rect.width / 2 - pw / 2;
+        let y = rect.top - ph - 12;
+
+        if (y < 8) {
+          y = rect.bottom + 12; // 上無理なら下
+        }
+
+        x = Math.max(8, Math.min(window.innerWidth - pw - 8, x));
+
+        preview.style.left = x + "px";
+        preview.style.top = y + "px";
+        preview.style.opacity = 1;
+      });
+
+      btn.addEventListener("mouseleave", () => {
+        preview.style.opacity = 0;
+      });
+
+      wrap.appendChild(btn);
+      area.appendChild(wrap);
+    });
   });
-
-  btn.addEventListener("mouseenter", e => {
-    preview.innerHTML = `
-      <video src="${b.media}" autoplay muted loop playsinline></video>
-      <p>${b.description}</p>
-    `;
-
-    const rect = e.currentTarget.getBoundingClientRect();
-    const pw = preview.offsetWidth;
-    const ph = preview.offsetHeight;
-    const margin = 12;
-
-    let x = rect.left + rect.width / 2 - pw / 2;
-    let y = rect.top - ph - margin;
-
-    if (y < margin) {
-      y = rect.bottom + margin;
-    }
-
-    x = Math.max(margin, Math.min(window.innerWidth - pw - margin, x));
-
-    preview.style.left = x + "px";
-    preview.style.top = y + "px";
-    preview.style.opacity = 1;
-  });
-
-  btn.addEventListener("mouseleave", () => {
-    preview.style.opacity = 0;
-  });
-
-  area.appendChild(btn);
-});
 </script>
 
 </body>
