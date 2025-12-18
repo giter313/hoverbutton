@@ -28,7 +28,7 @@
          "label":"TETRIS",
          "description":"ブロック積み積み",
          "media":"./assets/Tetris.webm",
-         "link":"https://sites.google.com/view/ramengameportal/games/tetris"
+         "link":"https://sites.google.com/view/ramengameportal/games/%E3%81%9D%E3%81%AE%E4%BB%96/tetris"
       },
       {
          "label":"Among Us",
@@ -64,13 +64,13 @@
          "label":"Battle Sim",
          "description":"おもしろクソゲー",
          "media":"./assets/Amongus.webm",
-         "link":"https://turbowarp.org/1254967314/fullscreen"
+         "link":"https://sites.google.com/view/ramengameportal/games/%E3%81%9D%E3%81%AE%E4%BB%96/battlesim"
       },
       {
          "label":"オセロ",
          "description":"オセロじゃなくて「リバーシ」",
          "media":"./assets/Amongus.webm",
-         "link":"https://sites.google.com/view/ramengameportal/games/%E3%81%9D%E3%81%AE%E4%BB%96/battlesim"
+         "link":"https://sites.google.com/view/ramengameportal/games/%E3%81%9D%E3%81%AE%E4%BB%96/osero"
       },
       {
          "label":"ゲームのつぼ",
