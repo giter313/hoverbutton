@@ -14,29 +14,29 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: transparent;
+  background: #020617;
   font-family: system-ui, sans-serif;
 }
 
 #root {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 24px;
+  padding: 32px 24px 80px;
 }
 
-/* ===== タイトル ===== */
+/* ===== TITLE ===== */
 h1 {
-  margin: 0 0 48px;
   text-align: center;
-  font-size: 1.6rem;
-  letter-spacing: .18em;
+  margin: 0 0 48px;
+  letter-spacing: .2em;
   color: var(--neon);
+  font-size: 1.6rem;
 }
 
-/* ===== ボタン群 ===== */
+/* ===== BUTTON GRID ===== */
 .buttons {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, max-content));
   justify-content: center;
   gap: 18px 20px;
 }
@@ -47,6 +47,7 @@ h1 {
 
 /* ===== BUTTON ===== */
 .cyber-btn {
+  min-width: 160px;
   padding: 12px 20px;
   border-radius: 14px;
   background:
@@ -57,7 +58,11 @@ h1 {
   font-weight: 700;
   letter-spacing: .05em;
   cursor: pointer;
-  white-space: nowrap;
+
+  white-space: nowrap;        /* ★ 絶対改行させない */
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   transition: box-shadow .15s ease, transform .15s ease;
 }
 
@@ -66,37 +71,22 @@ h1 {
   box-shadow: 0 0 18px rgba(56,189,248,.45);
 }
 
-/* ===== PREVIEW（見切れ防止 完全版） ===== */
+/* ===== PREVIEW ===== */
 .preview {
-  position: absolute;
-  bottom: calc(100% + 14px);
-
-  /* ★ ここが核心 */
-  left: 50%;
-  translate: -50% 0;
-  max-width: min(90vw, 320px);
-
+  position: fixed;            /* ★ 画面基準にする */
+  width: min(90vw, 320px);
   padding: 14px;
   border-radius: 14px;
   background: var(--card);
   border: 1px solid rgba(56,189,248,.4);
-
   box-shadow:
     0 0 22px rgba(56,189,248,.35),
     inset 0 0 12px rgba(56,189,248,.15);
 
   opacity: 0;
   pointer-events: none;
-  transition: opacity .18s ease, transform .18s ease;
   z-index: 9999;
-
-  /* ★ はみ出し対策 */
-  margin-inline: max(8px, env(safe-area-inset-left))
-                 max(8px, env(safe-area-inset-right));
-}
-
-.wrapper:hover .preview {
-  opacity: 1;
+  transition: opacity .15s ease;
 }
 
 .preview video {
@@ -109,13 +99,6 @@ h1 {
   margin: 0;
   font-size: 13px;
   opacity: .85;
-}
-
-/* ===== モバイル最適化 ===== */
-@media (max-width: 480px) {
-  h1 {
-    margin-bottom: 56px;
-  }
 }
 </style>
 </head>
@@ -132,6 +115,9 @@ fetch("./buttons.json")
   .then(r => r.json())
   .then(data => {
     const area = document.getElementById("buttons");
+    const preview = document.createElement("div");
+    preview.className = "preview";
+    document.body.appendChild(preview);
 
     data.buttons.forEach(b => {
       const wrap = document.createElement("div");
@@ -142,18 +128,39 @@ fetch("./buttons.json")
       btn.textContent = b.label;
       btn.onclick = () => location.href = b.link;
 
-      const pv = document.createElement("div");
-      pv.className = "preview";
-      pv.innerHTML = `
-        <video src="${b.media}" autoplay muted loop playsinline></video>
-        <p>${b.description}</p>
-      `;
+      btn.addEventListener("mouseenter", e => {
+        preview.innerHTML = `
+          <video src="${b.media}" autoplay muted loop playsinline></video>
+          <p>${b.description}</p>
+        `;
 
-      wrap.append(btn, pv);
+        const rect = e.target.getBoundingClientRect();
+        const pw = preview.offsetWidth || 320;
+        const ph = preview.offsetHeight || 200;
+
+        let x = rect.left + rect.width / 2 - pw / 2;
+        let y = rect.top - ph - 12;
+
+        if (y < 8) {
+          y = rect.bottom + 12; // 上無理なら下
+        }
+
+        x = Math.max(8, Math.min(window.innerWidth - pw - 8, x));
+
+        preview.style.left = x + "px";
+        preview.style.top = y + "px";
+        preview.style.opacity = 1;
+      });
+
+      btn.addEventListener("mouseleave", () => {
+        preview.style.opacity = 0;
+      });
+
+      wrap.appendChild(btn);
       area.appendChild(wrap);
     });
   });
 </script>
 
 </body>
-</html＞
+</html>
